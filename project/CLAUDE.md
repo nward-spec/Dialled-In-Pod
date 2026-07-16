@@ -15,7 +15,26 @@ Instagram carousel. Posted as a collab between **Ernest Performance** and the
 
 ---
 
-## The one thing to read before touching club-stack layout
+## Rendering mode: self-contained SVG is the default (autonomous)
+
+Because this environment's egress policy blocks product-image downloads (see
+"Network access requirement" below), the reliable, fully-autonomous way to build
+the carousel is to render clubs as **inline SVG drawn in the page** — no external
+images, no connectors, no credits, works every week for any winner regardless of
+which brands they play. The accurate WITB *text* specs carry the detail; the SVG
+clubs are clean minimalist icons (driver / iron / wedge / putter / ball).
+
+- **Reference implementation:** `builds/2026-07-05-john-deere-gotterup.html`
+  (Chris Gotterup, John Deere Classic — the proven dry-run build). Copy it per
+  week and swap the winner data + the 4–6 spec blocks.
+- **Render for approval:** `node tools/render_frames.js <build.html> out/frames`
+  (uses the pre-installed Chromium; screenshots each `.frame` to a 1080×1350 PNG).
+  Rendered PNGs are gitignored — they're regenerable build artifacts.
+- **Photo compositor is an optional upgrade,** not the default: only reach for
+  `tools/compose_club_stack.py` + real product photos if egress is ever widened to
+  allow image hosts. The SVG path is what runs unattended.
+
+## The one thing to read before touching club-stack layout (photo mode only)
 
 **Do not try to align club heads, shafts, and grips with CSS.** This was
 attempted across many prior iterations and it does not work. Here is why, so
@@ -46,15 +65,18 @@ compositor — do not add CSS transforms in the HTML to compensate.
 ```
 project/
   CLAUDE.md                      # this file
-  Winners Bag Carousel.html      # the carousel (6 frames). Uses pre-rendered stacks only.
+  Winners Bag Carousel.html      # template skeleton (photo-mode; uses pre-rendered stacks)
+  builds/
+    2026-07-05-...-gotterup.html # per-week builds (SVG mode) — copy the latest as a start
   tools/
-    compose_club_stack.py        # head+shaft+grip -> single aligned PNG
+    render_frames.js             # screenshot each .frame -> 1080x1350 PNG (Chromium)
+    compose_club_stack.py        # OPTIONAL photo mode: head+shaft+grip -> single aligned PNG
   assets/
     products/
-      manifest.json              # per-club source paths + hosel anchor/axis
-      raw/                        # source head/shaft/grip images (per winner, re-sourced weekly)
-      stack/                      # compositor output: <club>-stack.png  (what the HTML consumes)
-  out/                           # rendered/screenshotted frames for Slack approval
+      manifest.json              # per-club source paths + hosel anchor/axis (photo mode)
+      raw/                        # source head/shaft/grip images (photo mode)
+      stack/                      # compositor output: <club>-stack.png (photo mode)
+  out/                           # rendered frames for approval (PNGs gitignored)
 ```
 
 ## The carousel (6 frames)
@@ -92,15 +114,13 @@ do not duplicate these steps into the trigger.**
 2. **Cross-check the WITB** — pull the winner's What's-In-The-Bag from GolfWRX
    (and/or the manufacturer's WITB post) and verify it matches the confirmed
    winner. Do not proceed on an unconfirmed or mismatched bag.
-3. **Source product images** for each club (head / shaft / grip) into
-   `assets/products/raw/`, update `assets/products/manifest.json` with anchor
-   points, and **run the compositor**:
-   ```
-   python tools/compose_club_stack.py --all
-   ```
-   This writes aligned `assets/products/stack/<club>-stack.png` files.
-4. **Build the carousel** — fill `Winners Bag Carousel.html` with this week's
-   winner, clubs, and specs; render all 6 frames to `out/` and eyeball them.
+3. **Build the carousel (SVG mode — default).** Copy the latest `builds/*.html`
+   to a new dated file and fill in this week's winner, clubs, and spec blocks.
+   No image sourcing needed — the clubs are inline SVG. (Only use the photo
+   compositor instead if egress has been widened; see the photo-mode note.)
+4. **Render + eyeball.** `node tools/render_frames.js builds/<new>.html out/frames`,
+   then LOOK at every frame — especially the wedges/putter grid for overflow and
+   the hero frames for club clipping. Do not trust the markup alone.
 5. **Post to Slack for approval** — send the rendered frames to the team Slack
    channel and wait. **Do not schedule anything without explicit approval.**
 6. **Only on explicit approval:** schedule the post via **Metricool**
