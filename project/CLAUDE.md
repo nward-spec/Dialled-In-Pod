@@ -110,10 +110,61 @@ do not duplicate these steps into the trigger.**
 
 - **Slack** — approval step (post frames, await go-ahead).
 - **Metricool** — scheduling the approved carousel.
+- **Google Drive** — available fallback for supplying product images in-policy.
 
-Before using either in a session, verify the connector is actually enabled for
+Before using any in a session, verify the connector is actually enabled for
 *this* session (connector toggles only take effect for sessions started after the
 toggle). List connectors and confirm `enabledInChat: true` before relying on them.
+Connector traffic is routed through Anthropic, so connectors work **without** any
+network-allowlist entry.
+
+### Network access requirement (IMPORTANT — learned the hard way)
+
+The compositor needs real product photos, but the default **Trusted** egress
+policy blocks all golf-media and manufacturer image hosts (they return a
+`403` policy denial — do NOT retry or route around them). WebSearch still works,
+so winner-ID and WITB *text* cross-check are fine; only *image download* is blocked.
+
+To let the pipeline web-source photos, the environment's **Network access** must be
+set to **Custom** (with the hosts below + "include default package managers"
+checked) or **Full**. Edit this in the Claude Code on-the-web environment settings
+(cloud icon → edit environment → Network access). Changes only apply to sessions
+started *after* the change. Docs: https://code.claude.com/docs/en/claude-code-on-the-web#network-access
+
+Suggested Custom allowlist (add one per line; brands vary weekly so occasional
+additions may be needed — a blocked run will name the host):
+
+```
+# golf media / WITB sources
+*.golfwrx.com
+*.golf.com
+*.golfdigest.com
+*.todays-golfer.com
+*.nationalclubgolfer.com
+*.2ndswing.com
+# manufacturer sites + image CDNs
+*.ping.com
+*.taylormadegolf.com
+*.titleist.com
+*.callawaygolf.com
+*.bridgestonegolf.com
+*.cobragolf.com
+*.mizunogolf.com
+*.srixon.com
+*.pxg.com
+# retailer product-image CDNs (stock most brands)
+*.pgatoursuperstore.com
+*.golfgalaxy.com
+*.tgw.com
+cdn.shopify.com
+# generic reference images
+en.wikipedia.org
+upload.wikimedia.org
+```
+
+**Full** access avoids weekly host maintenance entirely — the pragmatic choice if
+the per-host allowlist becomes a nuisance. Either way, **MCP connectors (Slack /
+Metricool / Drive) do not need allowlisting.**
 
 ---
 
