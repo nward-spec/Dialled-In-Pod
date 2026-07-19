@@ -1,13 +1,14 @@
 # Dialled-In-Pod
 
-Dialled In Pod — podcast, plus the weekly "Winner's Bag" Instagram carousel
-(collab with Ernest Performance).
+Dialled In Pod — podcast.
 
 This repo follows the shared organisation convention in [`ORGANIZATION.md`](./ORGANIZATION.md):
 one canonical name (`Dialled-In-Pod`) across the GitHub repo, the Chat Project,
 and the Cowork Project. Keep Cowork chats inside the matching Cowork Project.
 
+> The weekly "Winner's Bag" (WITB) Instagram carousel — a collab published with
+> this pod — now lives in the `Ernest-Performance` repo under `project/`.
+
 ## Working files
 
-The carousel tooling and build instructions live under `project/`. Start with
-[`project/CLAUDE.md`](./project/CLAUDE.md) before touching the carousel build.
+Put working files under `project/`.

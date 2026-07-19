@@ -1,7 +1,6 @@
 # Dialled-In-Pod
 
-Dialled In Pod — podcast. Also hosts the weekly **"Winner's Bag" (WITB)**
-Instagram carousel, a collab with Ernest Performance, under `project/`.
+Dialled In Pod — podcast.
 
 This project uses **one canonical name across every surface** so it looks
 identical in the Claude app and on the web:
@@ -18,5 +17,4 @@ that keep all three projects uniform across devices.
 
 ## Structure
 
-- `project/` — working files, including the WITB carousel tooling.
-  See [`project/CLAUDE.md`](./project/CLAUDE.md) for how the carousel is built.
+- `project/` — working files for this project.
