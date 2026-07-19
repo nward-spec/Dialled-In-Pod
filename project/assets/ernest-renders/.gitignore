@@ -1,0 +1,3 @@
+# Working copies of Ernest brand club renders pulled from Google Drive.
+# Source of truth is Drive, not this repo — keep the binaries out of git.
+*.png
